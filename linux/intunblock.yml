@@ -1,0 +1,72 @@
+---
+- name: Unblock internet access while keeping SSH, RPC, and NIS
+  hosts: linux
+  become: yes
+  vars:
+    ssh_port: 22
+    rpc_ports:
+      - { port: 111, proto: tcp }
+      - { port: 111, proto: udp }
+      - { port: 2049, proto: tcp }
+      - { port: 2049, proto: udp }
+    nis_ports:
+      - { port: 834, proto: tcp }
+      - { port: 834, proto: udp }
+      - { port: 835, proto: tcp }
+      - { port: 835, proto: udp }
+    
+  tasks:
+    - name: Reset UFW to clean state
+      ufw:
+        state: reset
+      ignore_errors: yes
+
+    - name: Set default policy - ALLOW outgoing (unblock internet)
+      ufw:
+        direction: "{{ item.direction }}"
+        policy: "{{ item.policy }}"
+      loop:
+        - { direction: 'incoming', policy: 'deny' }
+        - { direction: 'outgoing', policy: 'allow' }  # This unblocks internet
+        - { direction: 'routed', policy: 'deny' }
+
+    - name: Allow SSH
+      ufw:
+        rule: allow
+        port: "{{ ssh_port }}"
+        proto: tcp
+
+    - name: Allow RPC ports
+      ufw:
+        rule: allow
+        port: "{{ item.port }}"
+        proto: "{{ item.proto }}"
+      loop: "{{ rpc_ports }}"
+
+    - name: Allow NIS ports
+      ufw:
+        rule: allow
+        port: "{{ item.port }}"
+        proto: "{{ item.proto }}"
+      loop: "{{ nis_ports }}"
+
+    - name: Enable UFW
+      ufw:
+        state: enabled
+
+    - name: Show UFW status after unblocking
+      command: ufw status verbose
+      register: ufw_status_unblocked
+
+    - name: Display unblocked status
+      debug:
+        msg: "Internet access UNBLOCKED. SSH, RPC, and NIS allowed."
+      # ---------------------------------------------------------
+    # 5. NetworkManager restart
+    # ---------------------------------------------------------
+    - name: Restart NetworkManager service
+      service:
+        name: NetworkManager
+        state: restarted
+
+

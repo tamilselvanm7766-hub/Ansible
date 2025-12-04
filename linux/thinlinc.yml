@@ -1,0 +1,36 @@
+---
+- name: Install ThinLinc on Ubuntu 22.04
+  hosts: linux  # Specify your target hosts or group
+  become: yes  # Use sudo for privileged tasks
+  tasks:
+    - name: Download ThinLinc .deb package
+      get_url:
+        url: "https://www.cendio.com/downloads/clients/thinlinc-client_4.18.0-3768_amd64.deb"
+        dest: "/tmp/thinlinc-client_4.18.0-3768_amd64.deb"
+        mode: '0644'
+
+    - name: Install ThinLinc .deb package
+      apt:
+        deb: "/tmp/thinlinc-client_4.18.0-3768_amd64.deb"
+        state: present
+
+    - name: Clean up ThinLinc .deb package
+      file:
+        path: "/tmp/thinlinc-client_4.18.0-3768_amd64.deb"
+        state: absent
+
+    - name: Ensure ThinLinc service is started and enabled
+      service:
+        name: thinlinc
+        state: started
+        enabled: yes
+
+    - name: Verify ThinLinc installation
+      command: thinlinc --version
+      register: thinlinc_version
+      changed_when: false
+
+    - name: Display ThinLinc version
+      debug:
+        var: thinlinc_version.stdout
+

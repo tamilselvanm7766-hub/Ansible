@@ -1,0 +1,10 @@
+---
+- name: Change user's shell to /bin/bash
+  hosts: client
+  become: yes
+  tasks:
+    - name: Change the shell for a user
+      user:
+        name: myuser   # Replace with the username
+        shell: /bin/bash
+

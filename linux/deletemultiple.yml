@@ -1,0 +1,34 @@
+---
+- name: Delete multiple directories in home directory
+  hosts: linux
+  become: true  # Run as root (if necessary)
+  vars:
+    home_directory: "/home"
+    dirs_to_delete:
+      - "{{ home_directory }}/exam1"
+      - "{{ home_directory }}/exam3"
+      - "{{ home_directory }}/ai_ds_a1"
+      - "{{ home_directory }}/aidsa2"
+      - "{{ home_directory }}/aidsb2"
+      - "{{ home_directory }}/ai_ds_b2"
+      - "{{ home_directory }}/ai_ds_b1"
+      - "{{ home_directory }}/ai_ds_c1"
+      - "{{ home_directory }}/ai_ds_c2"
+      - "{{ home_directory }}/endsem1"
+      - "{{ home_directory }}/endsem2"
+      - "{{ home_directory }}/endsem3"
+      - "{{ home_directory }}/endsem4"
+      - "{{ home_directory }}/endsem5"
+      - "{{ home_directory }}/iota2"
+      - "{{ home_directory }}/iotb2"
+      - "{{ home_directory }}/model2"
+      - "{{ home_directory }}/model1"
+
+  tasks:
+    - name: Remove specified directories
+      file:
+        path: "{{ item }}"
+        state: absent
+        recurse: yes  # This will delete the directory and all its contents
+      loop: "{{ dirs_to_delete }}"
+

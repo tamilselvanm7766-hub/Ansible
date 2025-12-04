@@ -1,0 +1,17 @@
+---
+- name: Install Google Chrome via Snap
+  hosts: clients
+  become: yes
+  tasks:
+    - name: Install snapd if not already installed
+      apt:
+        name: snapd
+        state: present
+      when: ansible_facts.packages['snapd'] is not defined
+
+    - name: Install Google Chrome via Snap
+      snap:
+        name: google-chrome
+        state: present
+        classic: yes
+

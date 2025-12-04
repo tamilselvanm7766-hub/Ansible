@@ -1,0 +1,21 @@
+---
+- name: Add sudo privileges to a list of users
+  hosts: linux
+  become: yes
+  vars:
+    sudo_users:
+      - cyberb1
+      - cyberb2
+      - snu-cse
+        
+
+      
+  tasks:
+    - name: Ensure users have sudo privileges
+      lineinfile:
+        path: /etc/sudoers
+        regexp: '^{{ item }}'
+        line: '{{ item }} ALL=(ALL) NOPASSWD: ALL'
+        validate: '/usr/sbin/visudo -cf %s'
+      loop: "{{ sudo_users }}"
+

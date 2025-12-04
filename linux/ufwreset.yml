@@ -1,0 +1,28 @@
+---
+- name: Reset UFW firewall on Ubuntu
+  hosts: linux
+  become: yes
+  tasks:
+    - name: Allow SSH incoming
+      ufw:
+        rule: allow
+        port: 22
+        proto: tcp
+        direction: in
+
+    - name: Reset UFW to defaults
+      ansible.builtin.command:
+        cmd: ufw --force reset
+
+    - name: Set default policy for incoming connections to deny
+      ansible.builtin.command:
+        cmd: ufw default deny incoming
+
+    - name: Set default policy for outgoing connections to allow
+      ansible.builtin.command:
+        cmd: ufw default allow outgoing
+
+    - name: Enable UFW
+      ansible.builtin.command:
+        cmd: ufw --force enable
+

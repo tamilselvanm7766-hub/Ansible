@@ -1,0 +1,58 @@
+---
+- name: ypbind client configuration 
+  hosts: 10.11.0.119 
+  tasks:
+    - name: Nis client install
+      apt:
+        name: nis
+        state: present
+    - name: copying yp.conf files to etc directory
+      copy:
+        src: "/etc/ansible/ypclient/yp.conf"
+        dest: "/etc/"
+    - name: copying yp.conf files to etc directory
+      copy:
+        src: "/etc/ansible/ypclient/common-session"
+        dest: "/etc/pam.d/"
+  
+    
+    - name: copying defaultdomain file to etc directory
+      copy:
+        src: "/etc/ansible/ypclient/defaultdomain"
+        dest: "/etc/"
+    - name: copying nsswitch file to etc directory
+      copy:
+        src: "/etc/ansible/ypclient/nsswitch.conf"
+        dest: "/etc/"
+ 
+    - name: remove line in host file
+      lineinfile:
+            path: /etc/hosts
+            regexp: 'lab4cse233'
+            state: absent
+            backup: yes
+    - name: add server connection string in host file
+      blockinfile:
+            path: /etc/hosts
+            block: |
+              10.11.0.120 cclabserver.com cclab120
+    - name: Enable and restart ypbind service
+      service:
+        name: ypbind
+        state: restarted
+        enabled: yes
+
+    - name: Enable and restart nscd service
+      service:
+        name: nscd
+        state: restarted
+        enabled: yes
+
+    - name: Enable and restart rpcbind service
+      service:
+        name: rpcbind
+        state: restarted
+        enabled: yes          
+          # - name: Reboot the system
+          #      reboot:
+          #      reboot_timeout: 000

@@ -1,0 +1,9 @@
+---
+- name: Reset user's password using plaintext
+  hosts: linux
+  become: yes
+  tasks:
+    - name: Reset the password for a user
+      shell: echo "snu-cse:desktop" | chpasswd
+      no_log: true
+

@@ -1,0 +1,10 @@
+---
+- name: Delete file to Ubuntu system
+  hosts: linux
+  become: yes  # If you need root privileges to write the file
+  tasks:
+    - name: Delete file to Client Systems
+      file:
+        path: /usr/share/backgrounds/wallpaper.jpg # Local path to the file
+        state: absent
+

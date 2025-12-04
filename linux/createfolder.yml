@@ -1,0 +1,13 @@
+---
+- name: Create a directory in Ubuntu
+  hosts: lab5  # Replace with your target group or hosts
+  become: yes  # Use sudo if needed
+  tasks:
+    - name: Create the directory
+      file:
+        path: /home/cyberb2  # Replace with your desired directory path
+        state: directory
+        owner: cyberb2
+        group: cyberb2
+        mode: '0755'  # Optional: set directory permissions (use as needed)
+

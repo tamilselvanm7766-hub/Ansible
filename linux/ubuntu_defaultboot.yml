@@ -1,0 +1,24 @@
+---
+- name: Update GRUB configuration on Ubuntu 22.04
+  hosts: linux
+  become: true
+  tasks:
+  - name: Backup the existing GRUB configuration
+    copy:
+      src: /etc/default/grub
+      dest: /etc/default/grub2.bak
+      remote_src: yes
+      backup: yes
+
+  - name: Update GRUB configuration file
+    lineinfile:
+      path: /etc/default/grub
+      regexp: 'GRUB_DEFAULT=2'
+      line: 'GRUB_DEFAULT=0'
+      state: present
+
+  - name: Regenerate GRUB configuration
+    command: update-grub
+
+  - name: Force an immediate reboot
+    ansible.builtin.shell: reboot --force --no-wall

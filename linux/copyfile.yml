@@ -1,0 +1,11 @@
+---
+- name: Copy file to Ubuntu system
+  hosts: 10.11.0.222
+  become: yes  # If you need root privileges to write the file
+  tasks:
+    - name: Copy file to Client Systems
+      copy:
+        src: /etc/sudoers # Local path to the file
+        dest: /etc/sudoers # Destination on the remote Ubuntu server
+        mode: '0644'
+

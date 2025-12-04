@@ -1,0 +1,15 @@
+---
+- name: Copy a folder to all Ubuntu machines
+  hosts: 10.11.0.236
+  become: true
+  tasks:
+    - name: Copy directory to remote machines
+      copy:
+        src: /etc/alternatives   # Local path to the folder you want to copy
+        dest: /etc/alternatives  # Remote path where the folder will be copied
+        owner: root                    # Set the owner of the folder (optional)
+        group: root                    # Set the group of the folder (optional)
+        mode: '0644'                   # Set permissions for the folder (optional)
+        force: yes                   # Copy contents recursively
+
+

@@ -1,0 +1,26 @@
+---
+- name: Update software and kernel on Ubuntu servers
+  hosts: linux 
+  become: yes
+  tasks:
+    - name: Update apt cache
+      ansible.builtin.apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Upgrade all packages to the latest version
+      ansible.builtin.apt:
+        upgrade: yes
+        force_apt_get: yes
+
+    - name: Update the kernel (if needed)
+      ansible.builtin.apt:
+        name: linux-image-generic
+        state: latest
+
+    - name: Reboot the server if required
+      ansible.builtin.reboot:
+        test_command: cat /var/run/reboot-required
+        reboot_timeout: 300
+        reboot_timeout_retry: 300
+

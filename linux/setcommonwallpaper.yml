@@ -1,0 +1,30 @@
+---
+- name: Set common wallpaper on Ubuntu systems
+  hosts: linux 
+  become: true
+  tasks:
+    - name: Copy wallpaper image to the target machine
+      copy:
+        src: /usr/share/backgrounds/canvas_by_roytanck.jpg 
+        dest: /usr/share/backgrounds/wallpaper.jpg
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Set GNOME desktop wallpaper
+      command: >
+        gsettings set org.gnome.desktop.background picture-uri 'file:///usr/share/backgrounds/wallpaper.jpg'
+      environment:
+        DISPLAY: :0
+        XAUTHORITY: /home/{{ ansible_user }}/.Xauthority
+      become: false  # No need to elevate privileges to set the wallpaper
+
+    - name: Ensure the wallpaper is set for all users (if applicable)
+      become: true
+      shell: |
+        for user in $(ls /home); do
+          su - $user -c "gsettings set org.gnome.desktop.background picture-uri 'file:///usr/share/backgrounds/wallpaper.jpg'"
+        done
+      when: ansible_user != 'root'
+
+

@@ -1,0 +1,30 @@
+---
+- name: Configure NFS client on Ubuntu 22.04
+  hosts: 10.11.0.234  # Define the target hosts
+  become: true  # Use sudo to run the tasks
+  tasks:
+
+    - name: Install NFS client package
+      apt:
+        name: nfs-common
+        state: present
+        update_cache: yes
+
+    - name: Create mount point directory
+      file:
+        path: /home  # Adjust this path as needed
+        state: directory
+
+    - name: Configure NFS mount in /etc/fstab
+      lineinfile:
+        path: /etc/fstab
+        line: "10.11.0.233:/home /home nfs defaults 0 0"  # Adjust this line
+        create: yes
+
+    - name: Mount NFS share
+      mount:
+        name: /home
+        src: "10.11.0.233:/home"  # Adjust this line
+        fstype: nfs
+        state: mounted
+

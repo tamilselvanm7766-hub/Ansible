@@ -1,0 +1,40 @@
+- name: Lock GNOME wallpaper setting for all users
+  hosts: linux
+  become: true
+  tasks:
+    - name: Ensure dconf-cli is installed
+      apt:
+        name: dconf-cli
+        state: present
+
+    - name: Create the dconf profile for gnome
+      copy:
+        dest: /etc/dconf/profile/user
+        content: |
+          user-db:user
+          system-db:local
+
+    - name: Create the dconf database directory
+      file:
+        path: /etc/dconf/db/local.d/
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+
+    - name: Set wallpaper and lock it in the dconf database
+      copy:
+        dest: /etc/dconf/db/local.d/00-wallpaper
+        content: |
+          [org/gnome/desktop/background]
+          picture-uri='file:///usr/share/backgrounds/wallpaper.jpg'
+
+    - name: Lock the wallpaper setting
+      copy:
+        dest: /etc/dconf/db/local.d/locks/wallpaper
+        content: |
+          /org/gnome/desktop/background/picture-uri
+
+    - name: Reload dconf settings
+      command: dconf update
+

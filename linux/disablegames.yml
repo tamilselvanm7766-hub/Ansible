@@ -1,0 +1,51 @@
+---
+- name: Disable games on Ubuntu 22.04
+  hosts: linux
+  become: yes
+  tasks:
+    - name: Remove common game packages
+      apt:
+        name:
+          - gnome-games
+          - gnome-mines
+          - gnome-sudoku
+          - aisleriot
+        state: absent
+        update_cache: yes
+
+    - name: Remove snap games (if installed via snap)
+      snap:
+        name: "{{ item }}"
+        state: absent
+      loop:
+        - gnome-mines
+        - gnome-sudoku
+        - aisleriot
+
+    - name: Disable and stop any game-related systemd services
+      systemd:
+        name: "{{ item }}"
+        state: stopped
+        enabled: no
+      loop:
+        - gnome-games
+        - aisleriot
+        - mines
+
+    - name: Remove game-related directories
+      file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - "/usr/games"
+        - "/usr/share/games"
+        - "/home/{{ ansible_user }}/.local/share/gnome-games"
+
+    - name: Remove game-related executable files from user directories
+      file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - "/home/{{ ansible_user }}/.gnome2/monkey-bubble"
+        - "/home/{{ ansible_user }}/.gnome2/aisleriot"
+

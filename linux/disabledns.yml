@@ -1,0 +1,12 @@
+---
+- name: Disable DNS using nmcli
+  hosts: windows
+  become: yes
+
+  tasks:
+    - name: Clear DNS servers
+      command: nmcli connection modify "netplan-zz-all-en" ipv4.dns ""
+
+    - name: Reactivate interface
+      command: nmcli connection up "netplan-zz-all-en"
+

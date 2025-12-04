@@ -1,0 +1,10 @@
+---
+- name: Delete folders on multiple Ubuntu machines
+  hosts: linux
+  become: yes
+  tasks:
+    - name: Remove a directory
+      ansible.builtin.file:
+        path: /home/lost+found
+        state: absent
+

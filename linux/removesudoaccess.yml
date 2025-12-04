@@ -1,0 +1,19 @@
+---
+- name: Remove sudo privileges from user
+  hosts: linux
+  become: yes
+  vars:
+    username: cyberb2 
+  tasks:
+    - name: Remove user from sudo group
+      ansible.builtin.user:
+        name: "{{ username }}"
+        groups: sudo
+        append: no
+
+    - name: Remove user's passwordless sudo from sudoers file
+      ansible.builtin.lineinfile:
+        path: /etc/sudoers
+        state: absent
+        regexp: '^{{ username }} ALL=\(ALL:ALL\) NOPASSWD:ALL'
+

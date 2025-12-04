@@ -1,0 +1,13 @@
+---
+- name: Remove a cron job
+  hosts: 10.11.0.234
+  tasks:
+    - name: Ensure a specific cron job is absent
+      ansible.builtin.cron:
+        name: "Disable networking"
+        state: absent
+
+    - name: Ensure a specific cron job is absent
+      ansible.builtin.cron:
+        name: "Enable networking"
+        state: absent

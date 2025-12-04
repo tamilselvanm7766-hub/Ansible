@@ -1,0 +1,17 @@
+---
+- name: Install Snap on Ubuntu
+  hosts: client
+  become: yes
+  tasks:
+    - name: Ensure snapd is installed
+      apt:
+        name: snapd
+        state: present
+        update_cache: yes
+
+    - name: Ensure snapd service is started and enabled
+      systemd:
+        name: snapd
+        state: started
+        enabled: yes
+

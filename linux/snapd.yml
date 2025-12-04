@@ -1,0 +1,16 @@
+---
+- name: Install Visual Studio Code via Snap on Ubuntu 22.04
+  hosts: linuxtest
+  become: yes
+  tasks:
+    - name: Install Snapd (if not already installed)
+      ansible.builtin.apt:
+        name: snapd
+        state: present
+        update_cache: yes
+
+    - name: Install Visual Studio Code via Snap
+      ansible.builtin.snap:
+        name: code
+        state: present
+

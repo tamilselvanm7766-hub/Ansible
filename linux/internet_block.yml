@@ -1,0 +1,18 @@
+---
+- name: Schedule Internet Block and Unblock Using nmcli
+  hosts: 10.11.0.234
+  become: true
+  tasks:
+    - name: Schedule internet block at 9 AM
+      cron:
+        name: "Disable networking"
+        minute: "55"
+        hour: "09"  # Time to disable internet (09:00 AM)
+        job: "/usr/bin/nmcli networking off"
+    - name: Schedule internet unblock at 11:20 AM
+      cron:
+        name: "Enable networking"
+        minute: "30"
+        hour: "09"  # Time to enable internet (11:20 AM)
+        job: "/usr/bin/nmcli networking on"
+                                            

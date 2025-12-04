@@ -1,0 +1,102 @@
+---
+- name: Block Internet using UFW except SSH, ypbind RPC, and one website
+  hosts: 10.11.0.119
+  become: yes
+
+  vars:
+    allowed_website_ips:
+      - "8.8.4.4"    # <- replace with real website IP(s)
+
+  tasks:
+
+    - name: Ensure UFW installed
+      apt:
+        name: ufw
+        state: present
+      when: ansible_os_family == "Debian"
+
+    # ---------------------------------------------------------
+    # 1. Default outgoing = deny (block Internet)
+    # ---------------------------------------------------------
+    - name: Deny all outgoing traffic
+      ufw:
+        direction: outgoing
+        policy: deny
+
+    # 2. Default incoming = deny
+    - name: Deny all incoming traffic
+      ufw:
+        direction: incoming
+        policy: deny
+
+    # ---------------------------------------------------------
+    # 3. Allow SSH (in and out)
+    # ---------------------------------------------------------
+    - name: Allow SSH incoming
+      ufw:
+        rule: allow
+        port: 22
+        proto: tcp
+        direction: in
+
+    - name: Allow SSH outgoing
+      ufw:
+        rule: allow
+        port: 22
+        proto: tcp
+        direction: out
+
+    # ---------------------------------------------------------
+    # 4. Allow ypbind client RPC (in + out)
+    # ---------------------------------------------------------
+    # rpcbind / portmapper
+    - name: Allow rpcbind port 111 (in/out)
+      ufw:
+        rule: allow
+        port: 111
+        proto: any
+
+    # ypserv
+    - name: Allow ypserv port 834 (in/out)
+      ufw:
+        rule: allow
+        port: 834
+        proto: any
+
+    # yppasswdd
+    - name: Allow yppasswdd port 835 (in/out)
+      ufw:
+        rule: allow
+        port: 835
+        proto: any
+
+    # ---------------------------------------------------------
+    # 5. Allow outbound access to a specific website
+    # ---------------------------------------------------------
+    - name: Allow outbound traffic to allowed website(s)
+      ufw:
+        rule: allow
+        direction: out
+        to_ip: "{{ item }}"
+        proto: tcp
+        port: 443
+      loop: "{{ allowed_website_ips }}"
+
+    # ---------------------------------------------------------
+    # 6. Allow outbound DNS so the server can resolve domains
+    # ---------------------------------------------------------
+    - name: Allow outgoing DNS
+      ufw:
+        rule: allow
+        direction: out
+        port: 53
+        proto: any
+
+    # ---------------------------------------------------------
+    # 7. Enable UFW
+    # ---------------------------------------------------------
+    - name: Enable UFW
+      ufw:
+        state: enabled
+        logging: on
+

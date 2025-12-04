@@ -1,0 +1,16 @@
+---
+- name: Create a user with a plaintext password
+  hosts: linux
+  become: yes
+  tasks:
+    - name: Create the user
+      user:
+        name: fds 
+        state: present
+    - name: Set the user's password
+      shell: echo "fds:cse" | chpasswd
+    - name: Change the shell for a user
+      user:
+        name: cyber  # Replace with the username
+        shell: /bin/bash
+

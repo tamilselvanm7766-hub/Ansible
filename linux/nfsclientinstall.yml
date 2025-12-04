@@ -1,0 +1,16 @@
+---
+- name: nfs client configuration 
+  hosts: 10.11.0.234
+  tasks:
+    - name: nfs client install
+      apt:
+        name: nfs-common
+        state: present
+        update_cache: yes 
+            
+    - name: add nfs client configuration in /etc/fstab file
+      blockinfile:
+            path: /etc/fstab
+            block: |
+              10.11.0.233:/home /home nfs
+              

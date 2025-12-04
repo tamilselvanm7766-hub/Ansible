@@ -1,0 +1,13 @@
+---
+- name: Install dconf-cli on Ubuntu 22.04
+  hosts: linux
+  become: yes
+  tasks:
+    - name: Update apt package list
+      apt:
+        update_cache: yes
+    - name: Install dconf-cli
+      apt:
+        name: dconf-cli
+        state: present
+

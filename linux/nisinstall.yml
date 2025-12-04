@@ -1,0 +1,72 @@
+---
+- name: Install and configure NIS client on Ubuntu
+  hosts: 10.11.0.216  # You can use a group or a specific host
+  become: true
+
+  vars:
+    nis_domain: "lab4server.com"  # Replace with your NIS domain
+    nis_server: "lab4server.com"  # Replace with your NIS server
+
+  tasks:
+    - name: Install NIS client package
+      apt:
+        name: nis
+        state: present
+        update_cache: yes
+
+    - name: Configure NIS domain name
+      lineinfile:
+        path: /etc/default/nis
+        regexp: '^NISDOMAIN='
+        line: 'NISDOMAIN={{ nis_domain }}'
+
+    - name: Configure NIS server IP address
+      lineinfile:
+        path: /etc/yp.conf
+        regexp: '^domain'
+        line: 'domain {{ nis_domain }} server {{ nis_server }}'
+
+    - name: Configure nsswitch.conf for NIS
+      lineinfile:
+        path: /etc/nsswitch.conf
+        regexp: '^passwd:'
+        line: 'passwd:         files nis'
+      notify:
+        - restart nis
+
+    - name: Configure nsswitch.conf for NIS group
+      lineinfile:
+        path: /etc/nsswitch.conf
+        regexp: '^group:'
+        line: 'group:          files nis'
+      notify:
+        - restart nis
+
+    - name: Configure nsswitch.conf for NIS shadow
+      lineinfile:
+        path: /etc/nsswitch.conf
+        regexp: '^shadow:'
+        line: 'shadow:         files nis'
+      notify:
+        - restart nis
+
+    - name: Configure nsswitch.conf for NIS hosts
+      lineinfile:
+        path: /etc/nsswitch.conf
+        regexp: '^hosts:'
+        line: 'hosts:          files nis'
+      notify:
+        - restart nis
+
+    - name: Start and enable NIS client service
+      systemd:
+        name: nscd
+        state: started
+        enabled: yes
+
+  handlers:
+    - name: restart nis
+      systemd:
+        name: nscd
+        state: restarted
+

@@ -1,0 +1,11 @@
+---
+# shutdownclients.yml
+
+- hosts: linux
+
+  tasks:
+    - name: reboot host
+      shell: /sbin/shutdown -h now
+      become: true
+
+

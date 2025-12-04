@@ -1,0 +1,65 @@
+---
+- name: Disable sleep, hibernate, and display power-saving on Ubuntu
+  hosts: linux
+  become: yes
+  tasks:
+    # Disable sleep and hibernate via systemd
+    - name: Mask sleep, suspend, and hibernate targets
+      ansible.builtin.command: >
+        systemctl mask sleep.target suspend.target hibernate.target hybrid-sleep.target
+
+    # Disable automatic suspend in systemd
+    - name: Update systemd sleep configuration
+      ansible.builtin.lineinfile:
+        path: /etc/systemd/sleep.conf
+        state: present
+        create: yes
+        regexp: '^#?HandleSuspendKey='
+        line: 'HandleSuspendKey=ignore'
+
+    - name: Restart systemd-logind to apply changes
+      ansible.builtin.service:
+        name: systemd-logind
+        state: restarted
+
+    # Disable GNOME power-saving settings for graphical environments
+    - name: Disable automatic suspend and blanking (GNOME)
+      ansible.builtin.shell: |
+        gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-ac-timeout 0
+        gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-battery-timeout 0
+        gsettings set org.gnome.desktop.session idle-delay 0
+      environment:
+        DISPLAY: :0
+        XAUTHORITY: /home/{{ ansible_user }}/.Xauthority
+
+    # Disable screen blanking for X11
+    - name: Create X11 power management configuration
+      ansible.builtin.copy:
+        dest: /etc/X11/xorg.conf.d/10-disable-power-saving.conf
+        content: |
+          Section "ServerFlags"
+            Option "BlankTime" "0"
+            Option "StandbyTime" "0"
+            Option "SuspendTime" "0"
+            Option "OffTime" "0"
+          EndSection
+        owner: root
+        group: root
+        mode: '0644'
+
+    # Update GRUB settings to disable console blanking
+    - name: Update GRUB to disable console blanking
+      ansible.builtin.lineinfile:
+        path: /etc/default/grub
+        regexp: '^#?GRUB_CMDLINE_LINUX_DEFAULT='
+        line: 'GRUB_CMDLINE_LINUX_DEFAULT="quiet splash consoleblank=0"'
+
+    - name: Update GRUB configuration
+      ansible.builtin.command: update-grub
+
+    # Ensure the changes are applied after reboot
+    - name: Reboot the system (optional, if necessary)
+      ansible.builtin.reboot:
+        msg: "Rebooting to apply changes"
+        reboot_timeout: 300
+
