@@ -1,0 +1,12 @@
+---
+- name: Uninstall Tally on Windows machines
+  hosts: windows
+  gather_facts: no
+  tasks:
+
+    - name: Run Tally uninstall executable
+      ansible.windows.win_command: '"C:\Program Files\Tally\uninstall.exe" /uninstall /quiet'
+      args:
+        creates: 'C:\Program Files\Tally\Tally.exe'  # skip if still installed
+      ignore_errors: yes
+

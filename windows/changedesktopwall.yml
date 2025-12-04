@@ -1,0 +1,21 @@
+- name: Set desktop wallpaper via Group Policy
+  hosts: windows
+  tasks:
+    - name: Set wallpaper path in Group Policy
+      ansible.windows.win_regedit:
+        path: HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\System
+        name: Wallpaper
+        data: "\\C:\\Windows\\Web\\4K\\img0_1920x1200.jpg"
+        type: string
+        state: present
+
+    - name: Set wallpaper style in Group Policy
+      ansible.windows.win_regedit:
+        path: HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\System
+        name: WallpaperStyle
+        data: "2"  # 2 = Stretched
+        type: string
+        state: present
+
+    - name: Refresh user policies
+      ansible.windows.win_shell: gpupdate /force

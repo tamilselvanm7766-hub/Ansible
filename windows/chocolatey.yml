@@ -1,0 +1,9 @@
+---
+- name: Install Chocolatey on Windows 11 clients
+  hosts: windows
+  tasks:
+    - name: Install Chocolatey
+      win_command: powershell -Command "Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))"
+      args:
+        creates: C:\ProgramData\chocolatey
+

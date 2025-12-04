@@ -1,0 +1,17 @@
+- name: Block DNS using single rule with multiple protocols
+  hosts: 10.11.0.119
+  vars:
+    allowed_ips:
+      - lms.snuchennai.edu.in
+  tasks:
+    - name: Block DNS outbound for both TCP and UDP
+      win_firewall_rule:
+        name: "Block DNS Outbound"
+        direction: out
+        action: block
+        protocol: any
+        remote_port: 53
+        enabled: yes
+        description: "Block all outbound DNS traffic"
+        state: present
+

@@ -1,0 +1,19 @@
+---
+- name: Install Visual Studio Code on Windows using direct installer
+  hosts: windows
+  tasks:
+    - name: Download VS Code Installer
+      win_get_url:
+        url: https://update.code.visualstudio.com/latest/win32-x64-user/stable
+        dest: C:\Temp\vscode_installer.exe
+
+    - name: Install VS Code
+      win_command: C:\Temp\vscode_installer.exe /silent
+      args:
+        removes: 'C:\Program Files\Microsoft VS Code\Code.exe'
+    
+    - name: Clean up installer
+      win_file:
+        path: C:\Temp\vscode_installer.exe
+        state: absent
+

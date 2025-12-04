@@ -1,0 +1,14 @@
+---
+- hosts: all
+  tasks:
+     - name: Install sofware
+       win_package:
+         path: \\<path to .exe>>
+         product_id: '<<id>>'
+         arguments:
+           - /install
+           - /quiet
+           - /norestart
+         state: present
+
+

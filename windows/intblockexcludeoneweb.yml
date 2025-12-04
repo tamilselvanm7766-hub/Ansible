@@ -1,0 +1,17 @@
+---
+- name: Control Internet Access on Windows
+  hosts: 10.11.0.119
+  gather_facts: false
+  vars:
+    internet_state: "block"  # Change to "unblock" to remove restrictions
+    allowed_website_ip: "8.8.8.8"  # example.com - replace with your website IP
+    allowed_website_domain: "google.com"
+  
+  tasks:
+    - name: Include block tasks
+      include_tasks: intblock.yml
+      when: internet_state == "block"
+
+    - name: Include unblock tasks
+      include_tasks: intunblock.yml
+      when: internet_state == "unblock"

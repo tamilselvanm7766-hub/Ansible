@@ -1,0 +1,11 @@
+---
+- name: Reset user password on multiple Windows machines
+  hosts: windows
+    #  become: yes
+  tasks:
+    - name: Reset user password
+      ansible.windows.win_user:
+        name: Admin
+        password: king 
+        update_password: always
+

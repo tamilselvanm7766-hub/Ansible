@@ -1,0 +1,21 @@
+- hosts: 10.11.0.105
+  tasks:
+    - name: Get list of profiles to identify the corrupt one
+      win_shell: Get-WmiObject -Class Win32_UserProfile | Select-Object LocalPath, SID, Loaded
+      register: user_profiles
+
+    - name: Display user profiles
+      debug:
+        var: user_profiles.stdout_lines
+
+    - name: Delete corrupt user profile (replace USERNAME with actual user)
+      win_shell: |
+        $profile = Get-WmiObject -Class Win32_UserProfile | Where-Object { $_.LocalPath -like '*exam*' }
+        if ($profile) { $profile.Delete() }
+      when: "'exam' in user_profiles.stdout"
+
+    - name: Reboot to allow profile recreation
+      win_reboot:
+        msg: "Rebooting to allow new profile creation"
+        connect_timeout: 60
+        pre_reboot_delay: 30

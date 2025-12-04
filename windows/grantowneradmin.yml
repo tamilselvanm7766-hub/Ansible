@@ -1,0 +1,13 @@
+---
+- hosts: 10.11.0.234
+  gather_facts: no
+  tasks:
+  - name: Grant Ownership to Administrator user on the registry
+    win_acl:
+      path: HKLM:\SOFTWARE\Classes\Wow6432Node\CLSID\72C24DD5-D70A-438B-8A42-98424B88AFB8
+      user: Administrators
+      rights: TakeOwnership
+      type: allow
+      state: present
+      inherit: ContainerInherit
+      propagation: 'None'

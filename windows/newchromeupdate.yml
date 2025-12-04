@@ -1,0 +1,9 @@
+---
+- name: Update Google Chrome on Windows 11
+  hosts: windows
+  tasks:
+    - name: Ensure Google Chrome is updated to the latest version
+      win_chocolatey:
+        name: googlechrome
+        state: latest
+

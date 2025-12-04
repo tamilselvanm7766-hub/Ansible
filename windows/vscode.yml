@@ -1,0 +1,27 @@
+---
+- name: Install latest VS Code, 7-Zip, and Google Chrome on Windows
+  hosts: windowstest
+  tasks:
+    - name: Install Chocolatey (if not installed)
+      win_command: powershell -Command "Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))"
+      args:
+        creates: C:\ProgramData\chocolatey
+
+    - name: Install latest VS Code
+      win_chocolatey:
+        name: vscode
+        state: latest
+          # become: yes
+
+    - name: Install latest 7-Zip
+      win_chocolatey:
+        name: 7zip
+        state: latest
+          # become: yes
+
+    - name: Install latest Google Chrome
+      win_chocolatey:
+        name: googlechrome
+        state: latest
+          #      become: yes
+

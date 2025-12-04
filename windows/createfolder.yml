@@ -1,0 +1,10 @@
+---
+- name: Delete folder and its contents on multiple Windows machines
+  hosts: windows
+    #  become: yes
+  tasks:
+    - name: Delete folder and its contents
+      ansible.windows.win_file:
+        path: C:\Ansible
+        state: directory
+

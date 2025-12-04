@@ -1,0 +1,13 @@
+---
+- name: windows registry status check 
+  hosts: 10.11.0.234
+  tasks:
+    - name: check .NET version
+      ansible.windows.win_reg_stat:
+        path: 'HKLM:\SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full'
+        name: "version"
+      register: reg_val
+
+    - name: print .NET version
+      ansible.builtin.debug:
+        msg: "{{ reg_val }}"

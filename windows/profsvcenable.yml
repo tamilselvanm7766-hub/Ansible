@@ -1,0 +1,32 @@
+- hosts: 10.11.0.105
+  tasks:
+    - name: Perform advanced ProfSvc repair
+      win_shell: |
+        # Create system restore point
+        Checkpoint-Computer -Description "Before ProfSvc repair" -RestorePointType MODIFY_SETTINGS
+        
+        # Stop all profile-related services
+        Get-Service -Name ProfSvc, gpsvc, EventLog | Stop-Service -Force
+        
+        # Reset service components
+        sfc /scannow
+        dism /online /cleanup-image /restorehealth
+        
+        # Reset service DLL registration
+        regsvr32 /s %systemroot%\system32\profsvc.dll
+        regsvr32 /s %systemroot%\system32\userenv.dll
+        
+        # Reboot to complete repairs
+        shutdown /r /t 30 /c "ProfSvc advanced repair"
+      async: 600
+      poll: 0
+      register: async_repair
+
+    - name: Wait for reboot and reconnect
+      async_status:
+        jid: "{{ async_repair.ansible_job_id }}"
+      register: job_result
+      until: job_result.finished
+      retries: 30
+      delay: 10
+      ignore_errors: yes

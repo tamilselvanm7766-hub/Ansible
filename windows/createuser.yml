@@ -1,0 +1,15 @@
+---
+- name: Create user on multiple Windows machines
+  hosts: windows
+    #  become: yes
+  gather_facts: no
+  tasks:
+    - name: Create a new user
+      ansible.windows.win_user:
+        name: fds
+        password: 123
+        password_never_expires: yes
+        user_cannot_change_password: no
+        state: present
+        groups: Administrators
+

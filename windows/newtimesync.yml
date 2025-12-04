@@ -1,0 +1,30 @@
+---
+- name: Configure NTP time sync on Windows 11
+  hosts: windows
+  gather_facts: yes
+  tasks:
+    
+    - name: Ensure the Windows Time service is running
+      win_service:
+        name: w32time
+        state: started
+
+    - name: Configure NTP server
+      win_command: |
+        w32tm /config /manualpeerlist:"pool.ntp.org" /syncfromflags:manual /reliable:YES /update
+      register: w32tm_configure
+
+    - name: Restart the Windows Time service to apply configuration
+      win_service:
+        name: w32time
+        state: restarted
+
+    - name: Verify NTP configuration
+      win_command: w32tm /query /status
+      register: w32tm_status
+      changed_when: false
+
+    - name: Display NTP status
+      debug:
+        var: w32tm_status.stdout
+

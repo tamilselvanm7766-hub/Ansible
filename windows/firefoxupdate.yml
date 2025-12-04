@@ -1,0 +1,29 @@
+---
+- name: Update Firefox on Windows 11
+  hosts: windows
+  gather_facts: yes
+  tasks:
+
+    - name: Download Firefox installer
+      win_get_url:
+        url: "https://download.mozilla.org/?product=firefox-latest&os=win64&lang=en-US"
+        dest: "C:\\Temp\\Firefox_installer.exe"
+
+    - name: Run Firefox installer to update (silent installation)
+      win_command: "C:\\Temp\\Firefox_installer.exe /silent /install"
+      args:
+        creates: "C:\\Program Files\\Mozilla Firefox\\firefox.exe"
+
+    - name: Clean up the Firefox installer
+      win_file:
+        path: "C:\\Temp\\Firefox_installer.exe"
+        state: absent
+
+    - name: Verify Firefox version after installation
+      win_command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe --version"
+      register: firefox_version
+
+    - name: Display Firefox version
+      debug:
+        msg: "The installed Firefox version is: {{ firefox_version.stdout }}"
+

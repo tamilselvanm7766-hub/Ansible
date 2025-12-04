@@ -1,0 +1,24 @@
+---
+- name: Manage Windows updates on multiple machines
+  hosts: windows
+#  become: runas
+  tasks:
+    - name: Install all available updates
+      ansible.windows.win_updates:
+        category_names:
+          - SecurityUpdates
+          - CriticalUpdates
+          - UpdateRollups
+          - Drivers
+          - Updates
+          - Upgrades
+          - DefinitionUpdates
+          - Application
+          - Connectors
+          - FeaturePacks
+          - Guidance
+          - ServicePacks
+          - Tools
+        state: installed
+        reboot: yes
+        log_path: C:\Ansible\update.txt

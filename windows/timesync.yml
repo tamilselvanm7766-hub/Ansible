@@ -1,0 +1,23 @@
+---
+- name: Sync time on Windows machines with NTP server
+  hosts: windows
+  tasks:
+    - name: Set NTP server
+      win_shell: |
+        w32tm /config /manualpeerlist:"pool.ntp.org" /syncfromflags:manual /reliable:YES /update
+      register: ntp_config
+
+    - name: Force time sync
+      win_shell: |
+        w32tm /resync
+      when: ntp_config.changed
+
+    - name: Verify NTP configuration
+      win_shell: |
+        w32tm /query /status
+      register: ntp_status
+
+    - name: Display NTP status
+      debug:
+        msg: "{{ ntp_status.stdout_lines }}"
+

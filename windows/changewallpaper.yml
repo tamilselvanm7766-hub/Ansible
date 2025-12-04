@@ -1,0 +1,22 @@
+---
+- name: Set wallpaper using registry
+  hosts: windows
+  tasks:
+    - name: Set the wallpaper path
+      ansible.windows.win_regedit:
+        path: HKCU\Control Panel\Desktop
+        name: Wallpaper
+        data: C:\Windows\Web\4K\img0_1920x1200.jpg
+        type: string
+
+    - name: Set wallpaper style (2 = stretch, 0 = center, 1 = tile)
+      ansible.windows.win_regedit:
+        path: HKCU\Control Panel\Desktop
+        name: WallpaperStyle
+        data: "2"
+        type: string
+
+    - name: Update wallpaper immediately
+      ansible.windows.win_shell:
+        cmd: RUNDLL32.EXE user32.dll,UpdatePerUserSystemParameters
+

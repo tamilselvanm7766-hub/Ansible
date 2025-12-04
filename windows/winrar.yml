@@ -1,0 +1,19 @@
+---
+- name: Install WinRAR on Windows
+  hosts: windowstest
+  tasks:
+    - name: Copy WinRAR installer to target machine
+      win_copy:
+        src: /home/snu-cse/Downloads/winrar-x64-701.exe  # Change to the path where you store the WinRAR installer
+        dest: C:\Temp\winrar-x64-701.exe  
+
+    - name: Install WinRAR
+      win_command: C:\Temp\winrar-x64-701.exe   /S  # /S for silent installation
+      args:
+        creates: "C:\\Program Files\\WinRAR\\WinRAR.exe"  # Check if WinRAR is already installed to avoid reinstalling
+
+    - name: Clean up WinRAR installer
+      win_file:
+        path: C:\Temp\winrar-x64-701.exe  
+        state: absent
+

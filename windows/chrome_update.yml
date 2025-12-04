@@ -1,0 +1,22 @@
+---
+- name: Update Google Chrome on Windows 11
+  hosts: windows
+  gather_facts: no
+  tasks:
+
+    - name: Download Google Chrome Installer
+      win_get_url:
+        url: https://dl.google.com/chrome/install/latest/chrome_installer.exe
+        dest: C:\Windows\Temp\chrome_installer.exe
+
+    - name: Install or Update Google Chrome
+      win_package:
+        path: C:\Windows\Temp\chrome_installer.exe
+        arguments: /silent /install
+        product_id: Google Chrome
+        state: present
+
+    - name: Clean up installer
+      win_file:
+        path: C:\Windows\Temp\chrome_installer.exe
+        state: absent

@@ -1,0 +1,9 @@
+---
+- name: Uninstall WinRAR on Windows machines
+  hosts: windowstest
+  tasks:
+    - name: Uninstall WinRAR using win_package
+      win_package:
+        name: WinRAR
+        state: absent
+

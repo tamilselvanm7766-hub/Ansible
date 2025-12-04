@@ -1,0 +1,9 @@
+---
+- name: Reboot multiple Windows machines
+  hosts: windows
+  gather_facts: false
+#  become: yes
+  tasks:
+    - name: Reboot Windows machines
+      ansible.windows.win_shell: shutdown /r /t 0 /f
+

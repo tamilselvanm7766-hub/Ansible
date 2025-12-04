@@ -1,0 +1,9 @@
+---
+- name: Shutdown multiple Windows machines
+  hosts: windows
+  gather_facts: false
+#  become: yes
+  tasks:
+    - name: Shutdown Windows machines
+      ansible.windows.win_shell: shutdown /s /t 0 /f
+

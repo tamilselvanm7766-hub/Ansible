@@ -1,0 +1,21 @@
+---
+- name: Install Tally 6.0 on Windows machines
+  hosts: windows
+  gather_facts: no
+  tasks:
+
+    - name: Copy Tally 6.0 installer to remote Windows machine
+      ansible.windows.win_copy:
+        src: /etc/ansible/windows/tally6.0.exe
+        dest: C:\Temp\tally6.0.exe
+
+    - name: Run Tally 6.0 installer silently
+      ansible.windows.win_command: C:\Temp\tally6.0.exe /S
+      args:
+        creates: 'C:\Program Files\Tally\Tally.exe'  # check if installed already
+
+    - name: Remove installer after installation
+      ansible.windows.win_file:
+        path: C:\Temp\tally6.0.exe
+        state: absent
+

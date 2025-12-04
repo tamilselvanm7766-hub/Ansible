@@ -1,0 +1,38 @@
+---
+- name: Set common wallpaper on multiple Windows clients
+  hosts: windows
+  gather_facts: yes
+  tasks:
+    
+
+    - name: Set wallpaper file path in registry
+      win_regedit:
+        path: HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System 
+        name: Wallpaper
+        data: 'C:\Windows\Web\Wallpaper\Windows\img0.jpg'
+        state: present
+
+    - name: Set wallpaper file path in registry
+      win_regedit:
+        path: HKCU:\Control Panel\Personalization\
+        name: lockscreen
+        data: 'C:\Windows\Web\Wallpaper\Windows\img0.jpg'
+
+
+    - name: Set wallpaper style (0 - Centered, 2 - Stretched, 6 - Fit)
+      win_regedit:
+        path: HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System
+        name: WallpaperStyle
+        data: '2'  # 2 = Stretched (Change if needed)
+        state: present
+    
+    - name: Enforce wallpaper via Group Policy (force reapply)
+      win_command: gpupdate /force
+      register: gpupdate_output
+      ignore_errors: yes
+
+    - name: Check if gpupdate was successful
+      debug:
+        var: gpupdate_output.stdout
+
+

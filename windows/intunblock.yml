@@ -1,0 +1,29 @@
+- name: Unblock DNS by creating allow rules
+  hosts: 10.11.0.119
+  tasks:
+    - name: Remove existing DNS block rules
+      win_firewall_rule:
+        name: "Block DNS Outbound"
+        state: absent
+
+    - name: Allow DNS outbound traffic
+      win_firewall_rule:
+        name: "Allow DNS Outbound"
+        direction: out
+        action: allow
+        protocol: any
+        remote_port: 53
+        enabled: yes
+        description: "Allow outbound DNS traffic"
+        state: present
+
+    - name: Allow DNS inbound responses
+      win_firewall_rule:
+        name: "Allow DNS Inbound"
+        direction: in
+        action: allow
+        protocol: any
+        local_port: 53
+        enabled: yes
+        description: "Allow inbound DNS responses"
+        state: present

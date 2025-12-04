@@ -1,0 +1,14 @@
+---
+- name: Create directory and copy file to multiple Windows machines
+  hosts: windows
+    #  become: yes
+  tasks:
+    - name: Create a directory
+      ansible.windows.win_file:
+        path: C:\users\admin\Desktop
+        state: directory
+
+    - name: Copy file to Windows machines
+      ansible.windows.win_copy:
+        src: /home/snu-cse/Downloads/CAT1-Retest.pdf
+        dest: C:\users\exam2\Desktop

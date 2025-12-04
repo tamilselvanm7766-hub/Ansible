@@ -1,0 +1,10 @@
+- name: Ensure Windows Update service is running and set to automatic
+  hosts: windows
+  gather_facts: no
+  tasks:
+    - name: Start Windows Update service and set it to automatic
+      win_service:
+        name: wuauserv
+        start_mode: manual
+        state: stopped
+

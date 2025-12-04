@@ -1,0 +1,16 @@
+---
+- name: Create limited Windows user
+  hosts: windows
+  gather_facts: no
+  tasks:
+
+    - name: Create a limited user account
+      ansible.windows.win_user:
+        name: exam
+        password: "123"
+        state: present
+        groups:
+          - Users     # standard limited group
+        password_never_expires: yes
+        user_cannot_change_password: no
+

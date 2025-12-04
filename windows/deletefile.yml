@@ -1,0 +1,11 @@
+---
+- name: Delete a file on all Windows hosts
+  hosts: windows
+  gather_facts: no
+
+  tasks:
+    - name: Ensure the file is removed
+      win_file:
+        path: 'C:\\users\\Admin\\Desktop\\tally6.0.exe'
+        state: absent
+
