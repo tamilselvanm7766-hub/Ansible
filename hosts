@@ -1,0 +1,110 @@
+# This is the default ansible 'hosts' file.
+#
+# It should live in /etc/ansible/hosts
+#
+#   - Comments begin with the '#' character
+#   - Blank lines are ignored
+#   - Groups of hosts are delimited by [header] elements
+#   - You can enter hostnames or ip addresses
+#   - A hostname/ip can be a member of multiple groups
+
+# Ex 1: Ungrouped hosts, specify before any group headers:
+[TallyServer]
+10.11.0.101
+[TallyServer:vars]
+ansible_connection=ssh
+ansible_user=snu-cse
+ansible_ssh_pass=cse
+[linux]
+10.11.0.102
+10.11.0.103
+10.11.0.104
+10.11.0.105
+10.11.0.106
+10.11.0.107
+10.11.0.108
+10.11.0.109
+10.11.0.110
+10.11.0.111
+10.11.0.112
+10.11.0.113
+10.11.0.114
+10.11.0.115
+10.11.0.116
+10.11.0.117
+10.11.0.118
+10.11.0.119
+10.11.0.121
+10.11.0.122
+10.11.0.123
+10.11.0.124
+10.11.0.125
+10.11.0.126
+10.11.0.127
+10.11.0.128
+10.11.0.129
+10.11.0.130
+10.11.0.131
+10.11.0.132
+10.11.0.133
+10.11.0.134
+10.11.0.135
+10.11.0.136
+10.11.0.137
+10.11.0.138
+10.11.0.139
+10.11.0.140
+[linux:vars]
+ansible_connection=ssh
+ansible_user=snu-cse
+ansible_ssh_pass=cse
+
+[privilege_escalation]
+remote_user = snu-cse 
+become = True
+become_method = sudo
+become_user =snu-cse
+become_ask_pass = False
+
+## green.example.com
+## blue.example.com
+## 192.168.100.1
+## 192.168.100.10
+
+# Ex 2: A collection of hosts belonging to the 'webservers' group:
+
+## [webservers]
+## alpha.example.org
+## beta.example.org
+## 192.168.1.100
+## 192.168.1.110
+
+# If you have multiple hosts following a pattern, you can specify
+# them like this:
+
+## www[001:006].example.com
+
+# You can also use ranges for multiple hosts: 
+
+## db-[99:101]-node.example.com
+
+# Ex 3: A collection of database servers in the 'dbservers' group:
+
+## [dbservers]
+##
+## db01.intranet.mydomain.net
+## db02.intranet.mydomain.net
+## 10.25.1.56
+## 10.25.1.57
+
+
+# Ex4: Multiple hosts arranged into groups such as 'Debian' and 'openSUSE':
+
+## [Debian]
+## alpha.example.org
+## beta.example.org
+
+## [openSUSE]
+## green.example.com
+## blue.example.com
+
