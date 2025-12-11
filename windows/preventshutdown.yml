@@ -1,0 +1,44 @@
+---
+- name: Disable shutdown for Users group
+  hosts: windows
+  
+  tasks:
+    - name: Backup current security policy
+      win_shell: |
+        $timestamp = Get-Date -Format "yyyyMMdd_HHmmss"
+        secedit /export /cfg "C:\Windows\Temp\secpol_backup_$timestamp.inf" /areas USER_RIGHTS
+        Write-Output "Backup saved: C:\Windows\Temp\secpol_backup_$timestamp.inf"
+      args:
+        executable: powershell
+        
+    - name: Remove Users group from shutdown privilege
+      win_shell: |
+        # Create INF file without Users group
+        $infContent = @'
+        [Unicode]
+        Unicode=yes
+        [Version]
+        signature="$CHICAGO$"
+        Revision=1
+        [Privilege Rights]
+        seshutdownprivilege = *S-1-5-32-544,*S-1-5-18
+        '@
+        
+        $tempFile = New-TemporaryFile
+        $infContent | Out-File -FilePath $tempFile.FullName -Encoding ascii
+        
+        # Apply the policy
+        secedit /configure /db C:\Windows\security\local.sdb /cfg $tempFile.FullName /areas USER_RIGHTS
+        
+        # Cleanup
+        Remove-Item $tempFile.FullName -Force
+        
+        Write-Host "✓ Users group removed from shutdown privilege"
+      args:
+        executable: powershell
+        
+    - name: Force policy update
+      win_shell: |
+        gpupdate /force
+      args:
+        executable: cmd

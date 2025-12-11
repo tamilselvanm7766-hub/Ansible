@@ -1,6 +1,6 @@
 ---
 - name: Unblock internet access while keeping SSH, RPC, and NIS
-  hosts: linux
+  hosts: 10.11.0.119
   become: yes
   vars:
     ssh_port: 22

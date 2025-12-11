@@ -1,0 +1,11 @@
+---
+- name: Enable WiFi adapter on Windows
+  hosts: 10.11.0.119
+  gather_facts: no
+
+  tasks:
+    - name: Enable WiFi interface
+      win_powershell:
+        script: |
+          Enable-NetAdapter -Name "Wi-Fi" -Confirm:$false
+

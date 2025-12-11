@@ -1,0 +1,10 @@
+- name: Start WLAN AutoConfig service
+  hosts: 10.11.0.117
+  gather_facts: no
+  tasks:
+    - name: Ensure WlanSvc is started
+      ansible.windows.win_service:
+        name: WlanSvc
+        state: started
+        start_mode: auto
+

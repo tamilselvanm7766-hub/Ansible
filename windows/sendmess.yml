@@ -1,8 +1,9 @@
 - name: Send message to Windows hosts
-  hosts: 10.11.0.119
+  hosts: windows
   gather_facts: no
   tasks:
     - name: Send popup message using msg.exe
       win_shell: |
-        msg * "This is a message sent from Ansible."
+        msg * "Your System is going to be Turned off. Don't Turn on. By Admin"
+        
 

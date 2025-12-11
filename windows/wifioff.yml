@@ -1,0 +1,8 @@
+- name: Force stop WLAN AutoConfig service on Windows
+  hosts: 10.11.0.206
+  gather_facts: no
+  tasks:
+    - name: Stop WlanSvc with force
+      ansible.windows.win_shell: |
+        Stop-Service -Name WlanSvc -Force -ErrorAction SilentlyContinue
+

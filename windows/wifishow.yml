@@ -1,0 +1,12 @@
+---
+- name: Enable all wireless adapters
+  hosts: 10.11.0.119
+  gather_facts: no
+
+  tasks:
+    - name: Enable wireless adapters automatically
+      win_powershell:
+        script: |
+          Get-NetAdapter | Where-Object {$_.InterfaceDescription -match "Wireless"} |
+          Enable-NetAdapter -Confirm:$false
+

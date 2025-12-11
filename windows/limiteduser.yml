@@ -6,7 +6,7 @@
 
     - name: Create a limited user account
       ansible.windows.win_user:
-        name: exam
+        name: endsem
         password: "123"
         state: present
         groups:
