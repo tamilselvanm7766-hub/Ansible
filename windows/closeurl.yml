@@ -1,0 +1,9 @@
+---
+- name: Close browser launched by task
+  hosts: windows
+  gather_facts: no
+
+  tasks:
+    - name: Stop Edge gracefully
+      win_shell: taskkill /IM msedge.exe /F
+

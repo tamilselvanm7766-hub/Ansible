@@ -1,0 +1,31 @@
+---
+- name: Open Browser Full Screen on User Desktop
+  # hosts: windows
+  hosts: 10.11.0.119
+  gather_facts: no
+
+  tasks:
+
+    - name: Create scheduled task to open browser
+      win_scheduled_task:
+        name: OpenBrowserKiosk
+        description: Open browser in fullscreen
+        actions:
+          - path: "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"
+            arguments: "-WindowStyle Hidden -Command Start-Process 'msedge.exe' '--kiosk https://lms.snuchennai.edu.in/login/index.php'"
+        triggers: []
+        username: "{{ ansible_user }}"
+        run_level: highest
+
+    - name: Run the scheduled task
+      win_shell: schtasks /run /tn OpenBrowserKiosk
+
+    - name: Wait 3 seconds
+      win_wait_for:
+        timeout: 3
+
+    - name: Delete scheduled task (cleanup)
+      win_scheduled_task:
+        name: OpenBrowserKiosk
+        state: absent
+

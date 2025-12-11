@@ -1,0 +1,14 @@
+---
+- name: Allow Users group to shut down the system
+  hosts: 10.11.0.234
+  gather_facts: no
+
+  tasks:
+
+    - name: Grant shutdown privilege to Users group
+      ansible.windows.win_user_right:
+        name: SeShutdownPrivilege
+        users:
+          - "Users"
+        action: add
+
