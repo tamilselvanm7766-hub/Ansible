@@ -5,8 +5,8 @@
   
   vars:
     users_to_delete:
-      - exam
-      - fds
+      - endsem
+      
       
 
   

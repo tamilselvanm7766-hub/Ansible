@@ -21,4 +21,4 @@
           - Tools
         state: installed
         reboot: yes
-        log_path: C:\Ansible\update.txt
+        log_path: C:\Temp\update.txt

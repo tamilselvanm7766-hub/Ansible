@@ -1,7 +1,7 @@
 ---
 - name: Open Browser Full Screen on User Desktop
-  # hosts: windows
-  hosts: 10.11.0.119
+  hosts: windows
+  #  hosts: 10.11.0.119
   gather_facts: no
 
   tasks:

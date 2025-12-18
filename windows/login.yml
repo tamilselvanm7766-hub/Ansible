@@ -1,0 +1,20 @@
+- name: Enable auto-login for Windows user
+  hosts: 10.11.0.119
+  gather_facts: no
+
+  tasks:
+    - name: Set registry keys for autologon
+      win_regedit:
+        path: HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon
+        name: "{{ item.name }}"
+        data: "{{ item.value }}"
+        type: string
+      loop:
+        - { name: "AutoAdminLogon", value: "1" }
+        - { name: "DefaultUserName", value: "Admin" }
+        - { name: "DefaultPassword", value: "king" }
+        - { name: "DefaultDomainName", value: "." }
+
+    - name: Reboot machine to log in user
+      win_reboot:
+

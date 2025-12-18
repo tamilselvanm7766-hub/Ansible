@@ -6,7 +6,7 @@
   tasks:
     - name: Create a new user
       ansible.windows.win_user:
-        name: fds
+        name: bcom-1styr
         password: 123
         password_never_expires: yes
         user_cannot_change_password: no

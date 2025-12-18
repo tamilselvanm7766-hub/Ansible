@@ -1,6 +1,7 @@
 ---
 - name: Shutdown multiple Windows machines
   hosts: windows
+  #hosts: 10.11.0.119
   gather_facts: false
 #  become: yes
   tasks:

@@ -1,0 +1,11 @@
+- name: Close applications safely
+  hosts: 10.11.0.119
+  gather_facts: no
+
+  tasks:
+    - name: Lof off active user
+      win_shell: |
+        query user
+        logoff console
+      ignore_errors: yes
+

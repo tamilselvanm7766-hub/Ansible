@@ -1,0 +1,17 @@
+- name: Remove multiple directories
+  hosts: 10.11.0.119
+  become: yes
+  tasks:
+    - name: Delete directories
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - /home/bcom01
+        - /home/cyber-b1
+        - /home/cyber-b2
+        - /home/cyberb1
+        - /home/exam
+        - /home/ts
+        - /home/mysql 
+
