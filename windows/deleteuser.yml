@@ -1,11 +1,11 @@
 ---
 - name: Delete multiple Windows users
-  hosts: windows
+  hosts: 10.11.0.119
   gather_facts: no
   
   vars:
     users_to_delete:
-      - endsem
+      - teset
       
       
 
@@ -15,5 +15,5 @@
       ansible.windows.win_user:
         name: "{{ item }}"
         state: absent
-          #        remove_profile: yes  # Optional: delete user profile as well
+        remove_profile: yes  # Optional: delete user profile as well
       loop: "{{ users_to_delete }}"

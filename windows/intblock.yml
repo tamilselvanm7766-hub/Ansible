@@ -1,5 +1,5 @@
 - name: Block DNS using single rule with multiple protocols
-  hosts: 10.11.0.119
+  hosts: windows
   tasks:
     - name: Block DNS outbound for both TCP and UDP
       win_firewall_rule:

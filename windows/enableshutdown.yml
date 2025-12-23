@@ -1,6 +1,6 @@
 ---
 - name: Allow Users group to shut down the system
-  hosts: 10.11.0.234
+  hosts: 10.11.0.119
   gather_facts: no
 
   tasks:

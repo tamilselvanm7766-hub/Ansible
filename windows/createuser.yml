@@ -1,12 +1,12 @@
 ---
 - name: Create user on multiple Windows machines
-  hosts: windows
+  hosts: 10.11.0.119
     #  become: yes
   gather_facts: no
   tasks:
     - name: Create a new user
       ansible.windows.win_user:
-        name: bcom-1styr
+        name: teset
         password: 123
         password_never_expires: yes
         user_cannot_change_password: no

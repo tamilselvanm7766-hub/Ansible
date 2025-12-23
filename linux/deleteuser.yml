@@ -1,6 +1,6 @@
 ---
 - name: Delete multiple users from Ubuntu system
-  hosts: linux
+  hosts: 10.11.0.119
   become: yes
   tasks:
     - name: Remove user accounts
@@ -9,8 +9,8 @@
         state: absent
         remove: yes
       loop:
-        - student
-        - fde 
+        - fds
+         
         
       # Optionally, you can specify the 'remove' flag to delete their home directories
       # This line is optional depending on whether you want to remove home directories.

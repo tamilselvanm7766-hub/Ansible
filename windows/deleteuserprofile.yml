@@ -1,0 +1,52 @@
+---
+- name: Comprehensive user profile removal
+  hosts: 10.11.0.119
+  gather_facts: false
+  
+  vars:
+    users_to_remove:
+      - "teset"
+      - "User2"
+      - "User3"
+  
+  tasks:
+    - name: Get profile paths before removal
+      ansible.windows.win_shell: |
+        $profiles = @{}
+        foreach ($user in @({{ users_to_remove | map('to_json') | join(', ') }})) {
+          $profile = Get-WmiObject -Class Win32_UserProfile | 
+            Where-Object { $_.LocalPath.Split('\\')[-1] -eq $user }
+          if ($profile) {
+            $profiles[$user] = @{
+              'path' = $profile.LocalPath
+              'sid' = $profile.SID
+            }
+          }
+        }
+        $profiles | ConvertTo-Json
+      register: profile_info
+      
+    - name: Remove profiles via WMI
+      ansible.windows.win_shell: |
+        foreach ($user in @({{ users_to_remove | map('to_json') | join(', ') }})) {
+          $profile = Get-WmiObject -Class Win32_UserProfile | 
+            Where-Object { $_.LocalPath.Split('\\')[-1] -eq $user }
+          if ($profile) {
+            try {
+              $profile.Delete()
+              Write-Output "WMI profile removed: $user"
+            } catch {
+              Write-Error "Failed to remove via WMI: $_"
+            }
+          }
+        }
+      
+    - name: Force delete profile directories (if WMI fails)
+      ansible.windows.win_shell: |
+        $profiles = {{ profile_info.stdout | from_json }}
+        foreach ($user in $profiles.Keys) {
+          $path = $profiles[$user].path
+          if (Test-Path $path) {
+            try {
+              # Take ownership
+              takeown /

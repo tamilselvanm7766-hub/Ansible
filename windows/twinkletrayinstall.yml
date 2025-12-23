@@ -1,0 +1,21 @@
+---
+- name: Install Twinkle tray Windows machines
+  hosts: windows
+  gather_facts: no
+  tasks:
+
+    - name: Copy Twinkle Tray  installer to remote Windows machine
+      ansible.windows.win_copy:
+        src: /etc/ansible/windows/Twinkle.Tray.v1.17.1.exe
+        dest: C:\Temp\Twinkle.Tray.v1.17.1.exe
+
+    - name: Run Twinkle Tray installer silently
+      ansible.windows.win_command: C:\Temp\Twinkle.Tray.v1.17.1.exe /S
+      args:
+        creates: 'C:\Program Files\Twinkle Tray\Twinkle.Tray.v1.17.1.exe'  # check if installed already
+
+    - name: Remove installer after installation
+      ansible.windows.win_file:
+        path: C:\Temp\tally6.0.exe
+        state: absent
+

@@ -1,0 +1,47 @@
+---
+# Ansible Playbook: Drop all MySQL databases except system defaults
+# Save as: drop_mysql_databases.yml
+
+- name: Drop all user databases in MySQL 8.0 on Windows
+  hosts:  windows
+  gather_facts: no
+  vars:
+    mysql_user: root
+    mysql_password: snucse@123
+    mysql_path: "C:\\Program Files\\MySQL\\MySQL Server 8.0\\bin\\mysql.exe"
+    
+  tasks:
+    - name: Get list of all databases (excluding system databases)
+      win_shell: |
+        & "{{ mysql_path }}" -u {{ mysql_user }} -p{{ mysql_password }} -e "SELECT schema_name FROM information_schema.schemata WHERE schema_name NOT IN ('mysql','information_schema','performance_schema','sys');" -s -N
+      register: databases_list
+      
+    - name: Display databases to be dropped
+      debug:
+        msg: "Databases to drop: {{ databases_list.stdout_lines }}"
+        
+    - name: Drop each user database
+      win_shell: |
+        & "{{ mysql_path }}" -u {{ mysql_user }} -p{{ mysql_password }} -e "DROP DATABASE IF EXISTS {{ item }};"
+      loop: "{{ databases_list.stdout_lines }}"
+      when: databases_list.stdout_lines | length > 0
+      register: drop_result
+      
+    - name: Display drop command output
+      debug:
+        msg: 
+          - "Database: {{ item.item }}"
+          - "Return code: {{ item.rc }}"
+          - "Stdout: {{ item.stdout }}"
+          - "Stderr: {{ item.stderr }}"
+      loop: "{{ drop_result.results }}"
+      when: drop_result is defined
+      
+    - name: Confirm all user databases dropped
+      win_shell: |
+        & "{{ mysql_path }}" -u {{ mysql_user }} -p{{ mysql_password }} -e "SHOW DATABASES;"
+      register: remaining_databases
+      
+    - name: Display remaining databases
+      debug:
+        msg: "{{ remaining_databases.stdout_lines }}"

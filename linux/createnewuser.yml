@@ -1,6 +1,6 @@
 ---
 - name: Create a user with a plaintext password
-  hosts: linux
+  hosts: 10.11.0.119
   become: yes
   tasks:
     - name: Create the user
