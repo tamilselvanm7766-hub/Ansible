@@ -2,7 +2,9 @@
 # shutdownclients.yml
 
 - hosts: linux
-
+  become: true
+  become_method: sudo  # or 'su', depending on your environment
+  become_user: root 
   tasks:
     - name: reboot host
       shell: /sbin/shutdown -h now
